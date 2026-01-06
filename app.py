@@ -226,6 +226,12 @@ def view_jobs():
     return render_template(
         "view-job.html", jobs=jobs, applied_job_ids=applied_job_ids
     )
+# --------------------------------------
+# ABOUT PAGE (FIXES 500 ERROR)
+# --------------------------------------
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 # --------------------------------------
 # LOGOUT
@@ -241,3 +247,4 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
