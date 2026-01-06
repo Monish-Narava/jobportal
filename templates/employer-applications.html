@@ -1,0 +1,19 @@
+<h2>Students Applied for Your Jobs</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Student Name</th>
+        <th>Email</th>
+        <th>Job Title</th>
+        <th>Resume</th>
+    </tr>
+
+    {% for app in applications %}
+    <tr>
+        <td>{{ app.name }}</td>
+        <td>{{ app.email }}</td>
+        <td>{{ app.title }}</td>
+        <td><a href="/static/resumes/{{ app.resume }}" download>Download</a></td>
+    </tr>
+    {% endfor %}
+</table>

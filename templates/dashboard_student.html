@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+
+    <!-- Google Font (same as home page) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("{{ url_for('static', filename='images/stu.jpg') }}");
+            height: 100vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 0;
+        }
+
+        /* --- NAVBAR  --- */
+        .navbar {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 24px;     /* SAME as home */
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;     /* SAME */
+            margin-left: 25px;   /* SAME spacing */
+            font-weight: 400;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00ffcc;
+        }
+
+        /* --- DASHBOARD BOX --- */
+        .dashboard-container {
+            position: relative;
+            z-index: 1;
+            width: 450px;
+            padding: 35px;
+            border-radius: 12px;
+            background: rgba(18, 15, 15, 0.08);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            margin-right: 500px;
+
+            text-align: center;
+            color: white;
+            background-color: rgba(189, 182, 182, 0.22);
+        }
+
+        h2 { font-size: 28px; margin-bottom: 20px; }
+
+        .button-group a {
+            display: block;
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 6px;
+            background: rgba(236, 227, 227, 0.94);
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .button-group a:hover {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR (same as home style) -->
+<div class="navbar">
+    <h2>Job Portal</h2>
+
+    <div class="nav-links">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard-container">
+    <h2>Hello, {{ user.name }} 👋</h2>
+
+    <div class="button-group">
+        <a href="/view-job">View Jobs</a>
+        <a href="/view-applications">My Applications</a>
+        <a href="/profile">My Profile</a>
+    </div>
+</div>
+
+</body>
+</html>

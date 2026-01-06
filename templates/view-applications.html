@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Applications</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls input, .controls select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #3498db;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .applied { background-color: #f39c12; }
+        .reviewed { background-color: #3498db; }
+        .shortlisted { background-color: #2ecc71; }
+
+        .pagination {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .pagination button {
+            padding: 6px 12px;
+            margin: 2px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pagination button:hover {
+            background-color: #45a049;
+        }
+
+        .pagination button.active {
+            background-color: #2ecc71;
+        }
+
+        @media screen and (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            tr {
+                margin-bottom: 15px;
+            }
+            th, td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            th::before, td::before {
+                position: absolute;
+                left: 15px;
+                width: 45%;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+            th::before { content: attr(data-title); }
+            td::before { content: attr(data-title); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Students Applied for Your Jobs</h2>
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search by name, email or job title" onkeyup="filterTable()">
+        <select id="statusFilter" onchange="filterTable()">
+            <option value="">All Statuses</option>
+            <option value="Applied">Applied</option>
+            <option value="Reviewed">Reviewed</option>
+            <option value="Shortlisted">Shortlisted</option>
+        </select>
+    </div>
+
+    <table id="applicationsTable">
+        <thead>
+            <tr>
+                <th data-title="Student Name">Student Name</th>
+                <th data-title="Email">Email</th>
+                <th data-title="Job Title">Job Title</th>
+                <th data-title="Resume">Resume</th>
+                <th data-title="Status">Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            {% for a in applications %}
+            <tr>
+                <td data-title="Student Name">{{ a.name }}</td>
+                <td data-title="Email">{{ a.email }}</td>
+                <td data-title="Job Title">{{ a.title }}</td>
+                <td data-title="Resume">
+                    <a href="{{ url_for('static', filename='resumes/' + a.resume) }}" class="btn" download>Download</a>
+                </td>
+                <td data-title="Status">
+                    {% if a.status == 'Applied' %}
+                        <span class="status applied">Applied</span>
+                    {% elif a.status == 'Reviewed' %}
+                        <span class="status reviewed">Reviewed</span>
+                    {% elif a.status == 'Shortlisted' %}
+                        <span class="status shortlisted">Shortlisted</span>
+                    {% else %}
+                        <span class="status applied">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+    const rowsPerPage = 5;
+    const table = document.getElementById('applicationsTable');
+    const tbody = document.getElementById('tableBody');
+    const pagination = document.getElementById('pagination');
+    let currentPage = 1;
+
+    function paginateTable() {
+        const rows = tbody.getElementsByTagName('tr');
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].style.display = (i >= (currentPage - 1) * rowsPerPage && i < currentPage * rowsPerPage) ? '' : 'none';
+        }
+
+        pagination.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className = i === currentPage ? 'active' : '';
+            btn.onclick = () => { currentPage = i; paginateTable(); };
+            pagination.appendChild(btn);
+        }
+    }
+
+    function filterTable() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const statusValue = document.getElementById('statusFilter').value;
+        const rows = tbody.getElementsByTagName('tr');
+
+        for (let row of rows) {
+            const name = row.cells[0].innerText.toLowerCase();
+            const email = row.cells[1].innerText.toLowerCase();
+            const title = row.cells[2].innerText.toLowerCase();
+            const status = row.cells[4].innerText;
+
+            if ((name.includes(searchValue) || email.includes(searchValue) || title.includes(searchValue)) &&
+                (statusValue === '' || status === statusValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+        currentPage = 1;
+        paginateTable();
+    }
+
+    window.onload = paginateTable;
+</script>
+
+</body>
+</html>

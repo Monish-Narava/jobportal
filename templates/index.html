@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Portal</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        /* -----------------------------------
+           BACKGROUND + GLOBAL
+        ------------------------------------*/
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-image: url("{{ url_for('static', filename='images/index1.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Dark overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+            z-index: 0;
+        }
+
+        /* -----------------------------------
+           NAVBAR
+        ------------------------------------*/
+        .navbar {
+            width: 100%;
+     /* EXACT PIXELS */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 26px;     /* EXACT PIXELS */
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;         /* EXACT SPACING BETWEEN LINKS */
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 17px;   /* EXACT PIXELS */
+            font-weight: 400;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #00ffcc;
+        }
+
+        /* -----------------------------------
+           HERO SECTION
+        ------------------------------------*/
+        .hero {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            margin-top: 10%;    /* EXACT as earlier */
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 45px;
+            font-weight: 700;
+            text-shadow: 0 3px 8px black;
+        }
+
+        /* -----------------------------------
+           QUOTE SCROLLER
+        ------------------------------------*/
+        .quote-box {
+            margin-top: 25px;
+            height: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quote-slide {
+            color: #e3e3e3;
+            font-size: 19px;
+            font-style: italic;
+            animation: scrollQuotes 10s linear infinite;
+        }
+
+        @keyframes scrollQuotes {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(-40px); }
+            50% { transform: translateY(-80px); }
+            75% { transform: translateY(-120px); }
+            100% { transform: translateY(0); }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>Job Portal</h2>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+</div>
+
+
+<!-- HERO SECTION -->
+<div class="hero">
+    <h1>Find Your Dream Job Here</h1>
+
+    <div class="quote-box">
+        <div class="quote-slide">
+            <p>“Your future depends on what you do today.”</p>
+            <p>“Opportunities don't happen, you create them.”</p>
+            <p>“Success is not final; failure is not fatal.”</p>
+            <p>“Great jobs are waiting. Take the first step.”</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

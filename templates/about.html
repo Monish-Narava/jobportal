@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            backdrop-filter: blur(4px);
+            color: #0e0202;
+            background-image: url("{{ url_for('static', filename='images/aboutusbg.webp') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 0;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0; left: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          
+            z-index: 2;
+        }
+
+        .navbar h2 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #00ffcc;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 120px 20px 30px 20px; /* top padding to account for navbar */
+            font-size: 35px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        /* Glass box */
+        .glass-box {
+            width: 70%;
+            margin: auto;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            background: rgba(243, 240, 240, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            color: black;
+        }
+
+        h2 {
+            color: rgb(171, 112, 3);
+        }
+
+        .content {
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .card {
+            width: 28%;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: orange;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>Job Portal</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="header">🏢About Us</div>
+
+    <!-- Glass content -->
+    <div class="glass-box">
+        <h2>Who We Are</h2>
+        <p class="content">
+            Welcome to our Job Portal! We are dedicated to connecting talented individuals 
+            with the right opportunities. Our goal is to simplify the job search process 
+            through a user-friendly platform that brings companies and candidates together.
+        </p>
+
+        <h2>Our Mission</h2>
+        <p class="content">
+            To empower students and professionals by providing easy access to job listings, 
+            career guidance, and a seamless application experience.
+        </p>
+
+        <h2>What We Provide</h2>
+
+        <div class="cards">
+            <div class="card">
+                <h3>💼 Job Listings</h3>
+                <p>Updated openings from top companies tailored for your skills.</p>
+            </div>
+
+            <div class="card">
+                <h3>🧑‍🎓 Career Support</h3>
+                <p>Resume tips, interview prep, and skill development guidance.</p>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Easy Application</h3>
+                <p>Quick apply features and clean tracking of job applications.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

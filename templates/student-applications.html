@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Applied Jobs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("{{ url_for('static', filename='images/dash1.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            z-index: 2;
+        }
+
+        .navbar h2 {
+            color: white;
+            font-size: 24px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #00ffcc;
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            top: 100px; /* space for navbar */
+            z-index: 1;
+            width: 70%;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.24);
+            backdrop-filter: blur(8px);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.35);
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        th {
+            background: rgba(255,255,255,0.2);
+            font-size: 18px;
+        }
+
+        a.download-link {
+            color: #4f92ef;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.download-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar like dashboard_employer -->
+<div class="navbar">
+    <h2>Job Portal</h2>
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('profile') }}">My Profile</a>
+        <a href="{{ url_for('view_jobs') }}">View Jobs</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Applied Jobs</h2>
+
+    <table>
+        <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Resume</th>
+        </tr>
+
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.title }}</td>
+            <td>{{ app.company }}</td>
+            <td><a class="download-link" href="/static/resumes/{{ app.resume }}" download>Download</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+</body>
+</html>

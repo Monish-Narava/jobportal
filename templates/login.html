@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("{{ url_for('static', filename='images/login.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Dark overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.45);
+            z-index: 0;
+        }
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+     
+            z-index: 2;
+        }
+
+        .navbar h2 {
+            color: white;
+            font-size: 24px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #00ffcc; /* same hover color as dashboard_employer */
+        }
+
+        /* Login box */
+        .login-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.13);
+            padding: 35px;
+            width: 350px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+            margin-right: 80px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #fff;
+            font-size: 25px;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.7);
+            outline: none;
+            font-size: 14px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #4c8bf5;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .login-container button:hover {
+            background: #1b6ef3;
+            transform: scale(1.03);
+        }
+
+        .login-container p {
+            text-align: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .login-container p a {
+            color: #d6e9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PROFESSIONAL NAVBAR -->
+    <div class="navbar">
+        <h2>Job Portal</h2>
+
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+            <a href="{{ url_for('about') }}">About Us</a>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <h2>Login</h2>
+
+        <form action="{{ url_for('login') }}" method="POST">
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <p><a href="{{ url_for('forgot_password') }}">Forgot Password?</a></p>
+        <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+    </div>
+
+</body>
+</html>

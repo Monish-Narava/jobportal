@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Employer Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #eef2f3;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background-image: url("{{ url_for('static', filename='images/edit_pro.jpg') }}");
+            background-size:cover;
+            backdrop-repeat:no-relative;
+        }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            padding:0px;
+        }
+
+        .navbar h2 { color: white; font-size: 24px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-weight: 500; }
+        .nav-links a:hover { color: #00ffcc; }
+
+        .edit-box {
+            width: 520px;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            margin: 120px auto 50px auto;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        label { font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 16px; }
+
+        .btn {
+            width: 48%;
+            padding: 12px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .update { background: #4CAF50; border: none; cursor: pointer; }
+        .cancel { background: #888; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Job Portal</h2>
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('employer_profile') }}">My Profile</a>
+        <a href="{{ url_for('view_jobs') }}">View Jobs</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="edit-box">
+    <h2>Edit Employer Profile</h2>
+
+    <form action="{{ url_for('update_profile') }}" method="POST" enctype="multipart/form-data">
+
+        <label>Company Name:</label>
+        <input type="text" name="company_name" value="{{ user.company_name }}" required>
+
+        <label>Industry:</label>
+        <input type="text" name="industry" value="{{ user.industry }}" required>
+
+        <label>Company Size:</label>
+        <select name="company_size">
+            <option>{{ user.company_size }}</option>
+            <option>1-10</option>
+            <option>11-50</option>
+            <option>51-200</option>
+            <option>201-500</option>
+            <option>500+</option>
+        </select>
+
+        <label>Website:</label>
+        <input type="text" name="company_website" value="{{ user.company_website }}">
+
+        <label>Location:</label>
+        <input type="text" name="company_location" value="{{ user.company_location }}">
+
+        <label>HR Phone:</label>
+        <input type="text" name="hr_phone" value="{{ user.hr_phone }}">
+
+        <label>About Company:</label>
+        <textarea name="about_company" rows="4">{{ user.about_company }}</textarea>
+
+        <label>Upload Company Logo:</label>
+        <input type="file" name="company_logo">
+
+        <div style="display:flex; justify-content:space-between;">
+            <button type="submit" class="btn update">Update</button>
+            <a href="{{ url_for('employer_profile') }}" class="btn cancel">Cancel</a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("{{ url_for('static', filename='images/register1.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Dark overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 0;
+        }
+
+        /* -------------------- FULL NAVBAR -------------------- */
+        .navbar {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+            z-index: 5;
+        }
+
+        .navbar .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            margin: 0;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            transition: 0.25s;
+        }
+
+        .navbar ul li a:hover {
+            color: #62b4ff;
+        }
+
+        /* -------------------- REGISTRATION CONTAINER -------------------- */
+        .register-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            padding: 35px;
+            width: 360px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.25);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+            margin-left: 80px; 
+            margin-top: 80px;
+        }
+
+        .register-container h2 {
+            text-align: center;
+            color: #fff;
+            font-size: 26px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        label {
+            font-size: 14px;
+            margin-top: 8px;
+            display: block;
+            color: #f1f1f1;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border-radius: 6px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #4c8bf5;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .25s;
+        }
+
+        button:hover {
+            background: #1b6ef3;
+            transform: scale(1.03);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            color: #fff;
+            font-size: 14px;
+            
+        }
+
+        .login-link a {
+            color: #d6e9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- ---------------- NAVBAR ---------------- -->
+    <div class="navbar">
+        <div class="logo">Job Portal</div>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+            <li><a href="{{ url_for('about') }}">About Us</a></li>
+        </ul>
+    </div>
+
+    <!-- --------------- FORM CONTAINER ---------------- -->
+    <div class="register-container">
+        <h2>User Registration</h2>
+
+        <form action="{{ url_for('register') }}" method="POST">
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="Enter full name" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+
+            <label>Role</label>
+            <select name="role" required>
+                <option disabled selected>-- Select Role --</option>
+                <option>Job Seeker</option>
+                <option>Employer</option>
+            </select>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+        </div>
+    </div>
+
+</body>
+</html>

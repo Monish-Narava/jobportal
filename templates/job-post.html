@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post a Job</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("{{ url_for('static', filename='images/post.jpg') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            padding-top: 90px;
+        }
+
+        .navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+           
+            z-index: 10;
+        }
+
+        .navbar h2 { 
+            color: white; 
+            font-size: 24px;
+         }
+        .nav-links a {
+             color: white; 
+             text-decoration: none; 
+             margin-left: 25px;
+             }
+        .nav-links a:hover { 
+            color: #00ffcc; 
+        }
+
+        .post-job-container {
+            width: 450px;
+            margin: auto;
+            margin-top: 0px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .post-job-container h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            color: black; 
+        }
+
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        .form-group label { 
+            display: block;
+            margin-bottom: 6px;
+            color: black; 
+        }
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+        }
+
+        .form-group textarea { height: 100px; resize: none; }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4c8bf5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btn:hover { background-color: #1b6ef3; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Job Portal</h2>
+    <div class="nav-links">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('employer_profile') }}">My Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="post-job-container">
+    <h2>Post a Job</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" name="title" placeholder="Enter job title" required>
+        </div>
+
+        <div class="form-group">
+            <label>Company</label>
+            <input type="text" name="company" placeholder="Enter company name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Location</label>
+            <input type="text" name="location" placeholder="Enter job location" required>
+        </div>
+
+        <div class="form-group">
+            <label>Salary</label>
+            <input type="text" name="salary" placeholder="Enter salary" required>
+        </div>
+
+        <div class="form-group">
+            <label>Job Description</label>
+            <textarea name="description" placeholder="Enter job description" required></textarea>
+        </div>
+
+        <button type="submit" class="btn">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>
