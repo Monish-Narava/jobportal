@@ -1,6 +1,6 @@
 Flask
-PyMySQL
+pymysql
 cryptography
 itsdangerous
-Werkzeug
+werkzeug
 gunicorn
