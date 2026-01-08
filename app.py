@@ -34,10 +34,10 @@ def index():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        password = request.form["password"]
-        role = request.form["role"]
+        name = request.form.get("name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        role = request.form.get("role")
 
         conn = None
         cursor = None
@@ -46,7 +46,7 @@ def register():
             conn = get_connection()
             cursor = conn.cursor()
 
-            # Check existing email
+            # Check existing user
             cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
             if cursor.fetchone():
                 return "Email already exists"
@@ -57,8 +57,8 @@ def register():
                 "INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)",
                 (name, email, hashed_password, role)
             )
-            conn.commit()
 
+            conn.commit()
             return redirect("/login")
 
         except Exception as e:
@@ -72,6 +72,7 @@ def register():
                 conn.close()
 
     return render_template("register.html")
+
 
 
 # ---------------- LOGIN ----------------
@@ -197,4 +198,5 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
