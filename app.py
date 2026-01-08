@@ -34,42 +34,45 @@ def index():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        role = request.form.get("role")
+        name = request.form["name"]
+        email = request.form["email"]
+        password = request.form["password"]
+        role = request.form["role"]
 
-        if not all([name, email, password, role]):
-            return "All fields are required"
-
-        hashed_password = generate_password_hash(password)
+        conn = None
+        cursor = None
 
         try:
             conn = get_connection()
             cursor = conn.cursor()
 
+            # Check existing email
             cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
             if cursor.fetchone():
                 return "Email already exists"
 
+            hashed_password = generate_password_hash(password)
+
             cursor.execute(
-                """
-                INSERT INTO users (name, email, password, role)
-                VALUES (%s, %s, %s, %s)
-                """,
+                "INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)",
                 (name, email, hashed_password, role)
             )
+            conn.commit()
+
+            return redirect("/login")
 
         except Exception as e:
-            return f"Registration error: {e}"
+            print("REGISTER ERROR:", e)
+            return "Registration failed. Please try again."
 
         finally:
-            cursor.close()
-            conn.close()
-
-        return redirect(url_for("login"))
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     return render_template("register.html")
+
 
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["GET", "POST"])
@@ -194,3 +197,4 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
