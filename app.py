@@ -24,6 +24,17 @@ def get_connection():
         cursorclass=pymysql.cursors.DictCursor,
         
     )
+@app.route("/db-test")
+def db_test():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        cursor.close()
+        conn.close()
+        return "✅ Database connected successfully"
+    except Exception as e:
+        return f"❌ DB Error: {e}"
 
 # ---------------- HOME ----------------
 @app.route("/")
@@ -198,6 +209,7 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
