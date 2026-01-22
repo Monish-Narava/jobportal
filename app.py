@@ -271,6 +271,10 @@ def reset_password(token):
         return render_template("reset_done.html")
 
     return render_template("reset.html")
+# ---------------- ABOUT ----------------
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
@@ -282,3 +286,4 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
