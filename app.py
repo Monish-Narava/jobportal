@@ -22,7 +22,7 @@ def get_connection():
         database=os.environ.get("MYSQLDATABASE"),
         port=int(os.environ.get("MYSQLPORT", 3306)),
         cursorclass=pymysql.cursors.DictCursor,
-        
+
     )
 @app.route("/db-test")
 def db_test():
@@ -209,7 +209,3 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
-
-
-
