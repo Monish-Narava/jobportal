@@ -21,9 +21,10 @@ def get_connection():
         password=os.environ.get("MYSQLPASSWORD"),
         database=os.environ.get("MYSQLDATABASE"),
         port=int(os.environ.get("MYSQLPORT", 3306)),
-        cursorclass=pymysql.cursors.DictCursor,
-
+        cursorclass=pymysql.cursors.DictCursor
     )
+
+# ---------------- DB TEST ----------------
 @app.route("/db-test")
 def db_test():
     try:
@@ -45,64 +46,47 @@ def index():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        role = request.form.get("role")
+        name = request.form["name"]
+        email = request.form["email"]
+        password = request.form["password"]
+        role = request.form["role"]
 
-        conn = None
-        cursor = None
+        conn = get_connection()
+        cursor = conn.cursor()
 
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
+        if cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return "Email already exists"
 
-            # Check existing user
-            cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
-            if cursor.fetchone():
-                return "Email already exists"
+        hashed_password = generate_password_hash(password)
 
-            hashed_password = generate_password_hash(password)
+        cursor.execute(
+            "INSERT INTO users (name, email, password, role) VALUES (%s,%s,%s,%s)",
+            (name, email, hashed_password, role)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
 
-            cursor.execute(
-                "INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)",
-                (name, email, hashed_password, role)
-            )
-
-            conn.commit()
-            return redirect("/login")
-
-        except Exception as e:
-            print("REGISTER ERROR:", e)
-            return "Registration failed. Please try again."
-
-        finally:
-            if cursor:
-                cursor.close()
-            if conn:
-                conn.close()
+        return redirect("/login")
 
     return render_template("register.html")
-
-
 
 # ---------------- LOGIN ----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
+        email = request.form["email"]
+        password = request.form["password"]
 
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
-
-            cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-            user = cursor.fetchone()
-
-        finally:
-            cursor.close()
-            conn.close()
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
 
         if not user or not check_password_hash(user["password"], password):
             return "Invalid email or password"
@@ -111,7 +95,7 @@ def login():
         session["role"] = user["role"]
         session["name"] = user["name"]
 
-        return redirect(url_for("dashboard"))
+        return redirect("/dashboard")
 
     return render_template("login.html")
 
@@ -119,7 +103,7 @@ def login():
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
-        return redirect(url_for("login"))
+        return redirect("/login")
 
     if session["role"] == "Job Seeker":
         return render_template("dashboard_student.html", user=session)
@@ -129,38 +113,138 @@ def dashboard():
 
     return "Invalid role"
 
+# ---------------- VIEW JOBS ----------------
+@app.route("/jobs")
+def view_jobs():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM jobs")
+    jobs = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template("view-job.html", jobs=jobs)
+
+# ---------------- POST JOB (EMPLOYER) ----------------
+@app.route("/post-job", methods=["GET", "POST"])
+def post_job():
+    if "user_id" not in session or session["role"] != "Employer":
+        return redirect("/login")
+
+    if request.method == "POST":
+        title = request.form["title"]
+        company = request.form["company"]
+        description = request.form["description"]
+        location = request.form["location"]
+        salary = request.form["salary"]
+
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO jobs (title, company, description, location, salary, employer_id) VALUES (%s,%s,%s,%s,%s,%s)",
+            (title, company, description, location, salary, session["user_id"])
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect("/dashboard")
+
+    return render_template("job-post.html")
+
+# ---------------- APPLY JOB ----------------
+@app.route("/apply/<int:job_id>")
+def apply_job(job_id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO applications (job_id, user_id) VALUES (%s,%s)",
+        (job_id, session["user_id"])
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect("/my-applications")
+
+# ---------------- STUDENT APPLICATIONS ----------------
+@app.route("/my-applications")
+def my_applications():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT jobs.title, jobs.company, applications.status
+        FROM applications
+        JOIN jobs ON applications.job_id = jobs.id
+        WHERE applications.user_id = %s
+    """, (session["user_id"],))
+    apps = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("student-applications.html", applications=apps)
+
+# ---------------- EMPLOYER APPLICATIONS ----------------
+@app.route("/employer-applications")
+def employer_applications():
+    if "user_id" not in session or session["role"] != "Employer":
+        return redirect("/login")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT users.name, users.email, jobs.title
+        FROM applications
+        JOIN users ON applications.user_id = users.id
+        JOIN jobs ON applications.job_id = jobs.id
+        WHERE jobs.employer_id = %s
+    """, (session["user_id"],))
+    apps = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("employer-applications.html", applications=apps)
+
+# ---------------- PROFILE ----------------
+@app.route("/profile")
+def profile():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, email, role FROM users WHERE id=%s", (session["user_id"],))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    return render_template("profile.html", user=user)
+
 # ---------------- FORGOT PASSWORD ----------------
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
-        email = request.form.get("email")
+        email = request.form["email"]
 
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
-
-            cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
-            user = cursor.fetchone()
-
-        finally:
-            cursor.close()
-            conn.close()
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
 
         if not user:
             return render_template("forgot.html", message="Email not found")
 
         token = serializer.dumps(email)
-        reset_link = url_for(
-            "reset_password",
-            token=token,
-            _external=True
-        )
+        reset_link = url_for("reset_password", token=token, _external=True)
 
-        return render_template(
-            "forgot.html",
-            message="Reset link generated successfully",
-            reset_link=reset_link
-        )
+        return render_template("forgot.html", message="Reset link generated", reset_link=reset_link)
 
     return render_template("forgot.html")
 
@@ -175,35 +259,24 @@ def reset_password(token):
         return "Invalid reset link"
 
     if request.method == "POST":
-        new_password = generate_password_hash(request.form.get("password"))
+        new_password = generate_password_hash(request.form["password"])
 
-        try:
-            conn = get_connection()
-            cursor = conn.cursor()
-
-            cursor.execute(
-                "UPDATE users SET password=%s WHERE email=%s",
-                (new_password, email)
-            )
-
-        finally:
-            cursor.close()
-            conn.close()
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET password=%s WHERE email=%s", (new_password, email))
+        conn.commit()
+        cursor.close()
+        conn.close()
 
         return render_template("reset_done.html")
 
     return render_template("reset.html")
 
-# ---------------- ABOUT ----------------
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("index"))
+    return redirect("/")
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
